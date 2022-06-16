@@ -3,6 +3,7 @@ import {
   UPDATE_CATEGORIES,
   UPDATE_CURRENT_CATEGORY,
 } from "./actions";
+import { useReducer } from "react";
 
 export const reducer = (state, action) => {
   switch (action.type) {
@@ -12,9 +13,23 @@ export const reducer = (state, action) => {
         ...state,
         products: [...action.products],
       };
-
-    // if it's none of these actions, do not update state at all and keep things the same!
+    // if action type value is the value of `UPDATE_CATEGORIES`, return a new state object with an updated categories array
+    case UPDATE_CATEGORIES:
+      return {
+        ...state,
+        categories: [...action.categories],
+      };
+    // if action type value is the value of `UPDATE_CURRENT_CATEGORY`, return a new state object with an updated categories string vaue instead of an array
+    case UPDATE_CURRENT_CATEGORY:
+      return {
+        ...state,
+        currentCategory: action.currentCategory,
+      };
     default:
       return state;
   }
 };
+
+export function useProductReducer(initialState) {
+  return useReducer(reducer, initialState);
+}
