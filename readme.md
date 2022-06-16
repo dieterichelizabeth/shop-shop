@@ -25,3 +25,7 @@ npm run seed
 ```bash
 npm run develop
 ```
+
+## Documentation
+
+- [React docs for the Context API](https://reactjs.org/docs/context.html)
