@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CartItem from "../CartItem";
 import Auth from "../../utils/auth";
 import "./style.css";
 import { useStoreContext } from "../../utils/GlobalState";
-import { TOGGLE_CART } from "../../utils/actions";
+import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from "../../utils/actions";
+import { idbPromise } from "../../utils/helpers";
 
 const Cart = () => {
   const [state, dispatch] = useStoreContext();
+
+  // state.cart.length is passed as a value in the dependency array to ensure the hook only executes if the depenency array has changed since last ran
+
+  useEffect(() => {
+    async function getCart() {
+      const cart = await idbPromise("cart", "get");
+      dispatch({ type: ADD_MULTIPLE_TO_CART, products: [...cart] });
+    }
+
+    // if the state.cart.length === 0, retrieve the items from the cart object store
+    // save it to the global state object
+    // use ADD_MULTIPLE_TO_CART because we have an array of items returning from IndexedDB, even if it's just one product saved
+    if (!state.cart.length) {
+      getCart();
+    }
+  }, [state.cart.length, dispatch]);
 
   function toggleCart() {
     dispatch({ type: TOGGLE_CART });
