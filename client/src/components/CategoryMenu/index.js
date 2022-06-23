@@ -62,6 +62,7 @@ function CategoryMenu() {
           {item.name}
         </button>
       ))}
+      <picture></picture>
     </div>
   );
 }

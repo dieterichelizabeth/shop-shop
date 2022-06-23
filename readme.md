@@ -29,3 +29,8 @@ npm run develop
 ## Documentation
 
 - [React docs for the Context API](https://reactjs.org/docs/context.html)
+
+## Reading List
+
+- [React Making a PWA](https://create-react-app.dev/docs/making-a-progressive-web-app/)
+- [Local Forage Tool](https://github.com/localForage/localForage)
