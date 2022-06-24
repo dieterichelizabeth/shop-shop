@@ -14,10 +14,17 @@ import { useLazyQuery } from "@apollo/client";
 const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
 const Cart = () => {
+  // Cart state variables
   const [state, dispatch] = useStoreContext();
+
+  // Checkout query state variables
   const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
 
+  // useLazyQuery to run Hook on button ("checkout") click
+  // data variable will contain the checkout session, but only after the query is called with the getCheckout() function
+  // After the payment processes, users will be redirected to <path>/success.
   useEffect(() => {
+    // redirect to Stripe once the data variable has data in it.
     if (data) {
       stripePromise.then((res) => {
         res.redirectToCheckout({ sessionId: data.checkout.session });
@@ -53,8 +60,14 @@ const Cart = () => {
   }
 
   function submitCheckout() {
+    window.alert(
+      "⚠️ WARNING ⚠️ - After pressing okay, the Stripe checkout page will display with an option to put in payment information. ⛔️ DO NOT ENTER SENSATIVE PERSONAL INFORMATION OR REAL CREDIT CARD NUMBERS! ⛔️ This project uses Stripe's public test key and the information that you provide is not secure."
+    );
+
     const productIds = [];
 
+    // loop over all items saved in state.cart then,
+    // add their ID's to a new productId's array for generating the Stripe session during query
     state.cart.forEach((item) => {
       for (let i = 0; i < item.purchaseQuantity; i++) {
         productIds.push(item._id);

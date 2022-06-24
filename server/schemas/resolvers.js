@@ -54,8 +54,13 @@ const resolvers = {
 
       throw new AuthenticationError("Not logged in");
     },
+    // expects an array of product ID's
     checkout: async (parent, args, context) => {
+      // parse out the referring URL, for a base domain that the request came from
+      // use this url for redirect on success back to shop-shop's success page
       const url = new URL(context.headers.referer).origin;
+
+      // Create a new instance of an Order Mongoose modle
       const order = new Order({ products: args.products });
 
       const line_items = [];
@@ -71,6 +76,7 @@ const resolvers = {
         });
 
         // generate price id using the product id
+        // multiply by 100 because Stripe stores prices in cents, not dollars
         const price = await stripe.prices.create({
           product: product.id,
           unit_amount: products[i].price * 100,
@@ -84,6 +90,7 @@ const resolvers = {
         });
       }
 
+      // generate a Stripe checkout session and return the session.id
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items,
