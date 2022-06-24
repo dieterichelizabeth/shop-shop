@@ -60,10 +60,7 @@ const resolvers = {
 
       const line_items = [];
 
-      console.log(order);
-
       const { products } = await order.populate("products");
-      console.log(products);
 
       for (let i = 0; i < products.length; i++) {
         // generate product id
@@ -106,7 +103,7 @@ const resolvers = {
       return { token, user };
     },
     addOrder: async (parent, { products }, context) => {
-      console.log(context);
+      // console.log(context);
       if (context.user) {
         const order = new Order({ products });
 
