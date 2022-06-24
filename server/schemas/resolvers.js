@@ -55,10 +55,15 @@ const resolvers = {
       throw new AuthenticationError("Not logged in");
     },
     checkout: async (parent, args, context) => {
+      const url = new URL(context.headers.referer).origin;
       const order = new Order({ products: args.products });
-      const { products } = await order.populate("products");
 
       const line_items = [];
+
+      console.log(order);
+
+      const { products } = await order.populate("products");
+      console.log(products);
 
       for (let i = 0; i < products.length; i++) {
         // generate product id
@@ -81,8 +86,6 @@ const resolvers = {
           quantity: 1,
         });
       }
-
-      const url = new URL(context.headers.referer).origin;
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
